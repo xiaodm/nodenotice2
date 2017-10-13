@@ -1,0 +1,16 @@
+{
+	"db": {
+		"host": "localhost",
+		"user": "root",
+		"password": "123456",
+		"database": "nodenotice"
+	},
+	"redisOptions": {
+		"host": "localhost",
+		"port": 6379,
+		"auth": "alex",
+		"redis_db": 2
+	},
+	"koa_port": 3355,
+	"socket_port": 3366
+}

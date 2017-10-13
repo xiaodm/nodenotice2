@@ -1,0 +1,31 @@
+{
+	"parserOptions": {
+		"ecmaVersion": 6
+	},
+	"globals": {
+	},
+	"env": {
+		"node": true
+	},
+	"extends": "eslint:recommended",
+	"rules": {
+		//潜在错误
+		"no-unused-vars": "off", //允许声明的变量未使用
+		"no-undef": "off", //允许使用未声明的变量
+		"no-extra-semi": "off", //允许多余的分号
+		"require-yield":"off", //允许Generator不包含yield
+
+		//最佳实践
+		"no-eval":"error", //禁止使用eval()
+		"no-loop-func":"error",//禁止在循环中定义函数
+		"no-with":"error",//禁止使用with关键字
+		"eqeqeq":"error",//只能使用===或!==
+		"strict":["error","global"],//强制使用严格模式
+		"handle-callback-err":"error",//强制处理callback中的error
+		"no-implicit-globals":"error",//禁止全局空间出现funtion定义
+		"no-var":"error",
+
+		//代码风格
+		"brace-style":["error","1tbs"] //花括号不换行
+	}
+}
