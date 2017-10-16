@@ -14,6 +14,8 @@ const app = new Koa(),
 const appRouter = require('./router');
 appRouter(app);
 
+const websocketHost = require("./service/WebsocketSocketioHost");
+
 onerror(app);
 
 app.use(bodyParser({
@@ -26,6 +28,8 @@ app.on('error', err => {
 app.on('error', (err, ctx) => {
 	log.error('server error', err, ctx)
 });
+
+new websocketHost.WebsocketNWHost().initSocket();
 
 module.exports = app.listen(port, ip);
 log.info('listening on port %s', port);

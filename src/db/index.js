@@ -13,23 +13,22 @@ const
 	log = require('../config/logger');
 
 const
-	redisClient = redis.createClient(config.get('redisOptions').port, config.get('redisOptions').host);
+	redisClient = redis.createClient(config.redisOptions.port, config.redisOptions.host);
 
 redisClient.on("error", function (err) {
 	log.error(err);
 });
 
 //redis权限设置
-if (config.get('redisOptions').auth.length) {
-	redisClient.auth(config.get('redisOptions').auth);
+if (config.redisOptions.auth.length) {
+	redisClient.auth(config.redisOptions.auth);
 }
-
 
 const
 	redisCo = redisWrapper(redisClient);
 
 co(function*() {
-	let redis_db = config.get('redisOptions').redis_db || 2;
+	let redis_db = config.redisOptions.redis_db || 2;
 	yield redisCo.select(redis_db);
 });
 
@@ -51,7 +50,7 @@ const live_sequelize = new Sequelize(
 let service = {
 	redis: redisCo,
 	sequelize: live_sequelize,
-	news_sql: {
+	mysql: {
 		query: (sql, replacements) => {
 			return co(function*() {
 				var result = yield live_sequelize.query(sql, {
