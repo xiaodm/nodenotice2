@@ -7,9 +7,9 @@ const mysqlSelf = require('../db').mysql;
 
 module.exports = {
 	async list(){
-		return await client_db.all({
+		return await client_db.findAll({
 			raw: true,
-			order: "create_time desc"
+			order: [['created_at', 'desc']]
 		});
 	},
 	async getByUserId(userId) {

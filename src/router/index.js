@@ -8,5 +8,9 @@ module.exports = function (app) {
 		ctx.body = 'Node Notice!';
 	});
 
+	require('./Client')(router);
+	require('./Message')(router);
+
+
 	app.use(router.routes()).use(router.allowedMethods());
 };

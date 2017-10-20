@@ -3,7 +3,8 @@
  */
 const Koa = require('koa'),
 	bodyParser = require('koa-bodyparser'),
-	onerror = require('koa-onerror');
+	onerror = require('koa-onerror'),
+    cors = require('koa-cors');
 
 const config = require('./config');
 const log = require('./config/logger');
@@ -17,7 +18,7 @@ appRouter(app);
 const websocketHost = require("./service/WebsocketSocketioHost");
 
 onerror(app);
-
+app.use(cors());
 app.use(bodyParser({
 	limit: '10mb'
 }));
@@ -29,7 +30,6 @@ app.on('error', (err, ctx) => {
 	log.error('server error', err, ctx)
 });
 
-new websocketHost.WebsocketNWHost().initSocket();
 
 module.exports = app.listen(port, ip);
 log.info('listening on port %s', port);

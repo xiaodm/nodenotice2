@@ -7,13 +7,13 @@ const ClientInfo_1 = require("../model/ClientInfo");
 const MessageType_1 = require("../model/MessageType");
 const MessageBody_1 = require("../model/MessageBody");
 const log = require('../config/logger');
-var Client_Service = require("./ClientService");
+const Client_Service = require("./ClientService");
 
 module.exports = {
 	socketServer: null,
-	async initReceive(data){
+	async initReceive(data,connKey){
 		try {
-			await this.processSubscriptMessage(data, null);
+			await this.processSubscriptMessage(data, {connKey:connKey});
 		}
 		catch (e) {
 			console.log(e);
@@ -30,6 +30,7 @@ module.exports = {
 			return;
 		}
 		var messageInfo = JSON.parse(message);
+		messageInfo.message.connKey = rinfo.connKey;
 		if (messageInfo.messageType == MessageType_1.MessageType.OnlineRegister
 			|| messageInfo.messageType == MessageType_1.MessageType.ReplyRegister) {
 			await registerClientInfo(messageInfo, rinfo);
@@ -41,7 +42,7 @@ module.exports = {
 			await updateClientInfo(messageInfo, rinfo);
 		}
 		if (messageInfo.messageType == MessageType_1.MessageType.DisConnect) {
-			await disconnectClientInfo(rinfo);
+			await this.disconnectClientInfo(messageInfo.connKey);
 		}
 		if (messageInfo.messageType == MessageType_1.MessageType.CustomMessage) {
 			// TODO send msg to targets
@@ -124,6 +125,14 @@ module.exports = {
 		catch (e) {
 			log.error(e);
 		}
+	},
+
+	/**
+	 * 客户端下线
+	 * @param connKey
+	 */
+	async disconnectClientInfo(connKey) {
+		await Client_Service.remove(connKey);
 	}
 };
 
@@ -141,7 +150,7 @@ const addClientToList = async function (clientInfo, rinfo) {
 		}
 		clientInfo.port = rinfo.port;
 	}
-	clientInfo.registerInfo.connectionId = clientInfo.ip;
+	clientInfo.registerInfo.connectionId = clientInfo.connKey;
 	await Client_Service.upsert(clientInfo);
 };
 
@@ -174,13 +183,7 @@ const registerClientInfo = async function (messageInfo, rinfo) {
 	this.addClientToList(clientInfo, rinfo);
 };
 
-/**
- * 客户端下线
- * @param connKey
- */
-const disconnectClientInfo = async function (connKey) {
-	await Client_Service.remove(connKey);
-};
+
 
 /**
  * 客户端下线

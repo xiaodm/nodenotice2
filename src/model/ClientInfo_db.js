@@ -10,7 +10,8 @@ exports.online_client_db = sequelize.define(
 		userId: {
 			field: 'userId',
 			type: Sequelize.STRING,
-			allowNull: true
+			allowNull: true,
+			primaryKey: true
 		},
 		connKey: {
 			field: 'connKey',
@@ -42,7 +43,7 @@ exports.online_client_db = sequelize.define(
 			type: Sequelize.STRING,
 			allowNull: true
 		},
-		create_time: {
+		/*create_time: {
 			field: 'create_time',
 			type: Sequelize.BIGINT,
 			allowNull: true
@@ -51,7 +52,7 @@ exports.online_client_db = sequelize.define(
 			field: 'update_time',
 			type: Sequelize.BIGINT,
 			allowNull: true
-		},
+		},*/
 		registerInfo: {
 			field: 'registerInfo',
 			type: Sequelize.STRING,
@@ -61,5 +62,6 @@ exports.online_client_db = sequelize.define(
 	{
 		tableName: 'online_client',
 		freezeTableName: true,
+		timestamps: true,
 	}
 );

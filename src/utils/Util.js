@@ -37,4 +37,4 @@ const Util = (function () {
 
 	return Util;
 }());
-exports.Util = Util;
+module.exports = Util;
