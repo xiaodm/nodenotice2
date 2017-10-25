@@ -17,8 +17,8 @@ module.exports = function (router) {
 	/**
 	 * 根据条件获取席位状态数据
 	 */
-	router.get('/clients/:proName/:proValues/:isRegisterPro',async function (ctx, next) {
-		ctx.body = Util.succeed(await MessageCore.getClientByCondition(ctx.params.proName.split(";"), ctx.params.proValues.split(";"), ctx.params.isRegisterPro));
+	router.get('/clients/:proName/:proValue/:isRegisterPro',async function (ctx, next) {
+		ctx.body = Util.succeed(await MessageCore.getClientByCondition(ctx.params.proName, ctx.params.proValues, ctx.params.isRegisterPro));
 	});
 
 

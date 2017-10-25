@@ -11,9 +11,9 @@ const Client_Service = require("./ClientService");
 
 module.exports = {
 	socketServer: null,
-	async initReceive(data,connKey){
+	async initReceive(data, connKey){
 		try {
-			await this.processSubscriptMessage(data, {connKey:connKey});
+			await this.processSubscriptMessage(data, {connKey: connKey});
 		}
 		catch (e) {
 			console.log(e);
@@ -31,23 +31,23 @@ module.exports = {
 		}
 		var messageInfo = JSON.parse(message);
 		messageInfo.message.connKey = rinfo.connKey;
-		if (messageInfo.messageType == MessageType_1.MessageType.OnlineRegister
-			|| messageInfo.messageType == MessageType_1.MessageType.ReplyRegister) {
-			await registerClientInfo(messageInfo, rinfo);
-		}
-		/*if (messageInfo.messageType == MessageType_1.MessageType.RequestStatusReply) {
-		 await replyCurrentInfo(messageInfo, rinfo);
-		 }*/
-		if (messageInfo.messageType == MessageType_1.MessageType.UpdateClientInfo) {
-			await updateClientInfo(messageInfo, rinfo);
-		}
-		if (messageInfo.messageType == MessageType_1.MessageType.DisConnect) {
-			await this.disconnectClientInfo(messageInfo.connKey);
-		}
-		if (messageInfo.messageType == MessageType_1.MessageType.CustomMessage) {
-			// TODO send msg to targets
-			await this.sendMsg(messageInfo);
-			console.log("receve CustomMessage:" + messageInfo.message);
+		switch (messageInfo.messageType) {
+			case MessageType_1.MessageType.OnlineRegister:
+				await registerClientInfo(messageInfo, rinfo);
+				break;
+			case MessageType_1.MessageType.Reconnected:
+				await registerClientInfo(messageInfo, rinfo);
+				break;
+			case MessageType_1.MessageType.UpdateClientInfo:
+				await updateClientInfo(messageInfo, rinfo);
+				break;
+			case MessageType_1.MessageType.DisConnect:
+				await this.disconnectClientInfo(messageInfo.connKey);
+				break;
+			case MessageType_1.MessageType.CustomMessage:
+				await this.sendMsg(messageInfo);
+				console.log("receve CustomMessage:" + messageInfo.message);
+				break;
 		}
 	},
 
@@ -74,26 +74,8 @@ module.exports = {
 	 * @param proValues 目标属性值集合
 	 * @param isRegisterInfoPro 是否为自定义的RegisterInfo内属性
 	 */
-	async getClientByCondition(proNames, proArrayValues, isRegisterInfoPro) {
-		// TODO  通过db能力去检索，目前是全查询出来再检索，数据量大可能有效率问题
-		let list = await Client_Service.list();
-
-		return list.filter(function (item) {
-			var match = false;
-			for (var i = 0; i < proNames.length; i++) {
-				var proValues = proArrayValues[i].split(",");
-				if (isRegisterInfoPro) {
-					match = proValues.lastIndexOf(item.registerInfo[proNames[i]]) > -1;
-				}
-				else {
-					match = proValues.lastIndexOf(item[proNames[i]]) > -1;
-				}
-				if (!match) {
-					break;
-				}
-			}
-			return match;
-		});
+	async getClientByCondition(proName, proValue, isRegisterInfoPro) {
+		return await Client_Service.getByJsonProp(proName,proValue,isRegisterInfoPro);
 	},
 
 	/**
@@ -105,15 +87,17 @@ module.exports = {
 		let io = this.socketServer;
 
 		try {
-			var connkeys = await this.getClientByCondition(data.targetProName, data.targetProValues, data.isRegisterInfoPro).map(t => t.connKey);
+			let connClients = await this.getClientByCondition(data.targetProName, data.targetProValues, data.isRegisterInfoPro);
+			let connKeys = connClients.map(t => t.connKey);
+			log.info('target connkeys:' + connKeys);
 			/*if (!io.sockets) {
 			 console.log(" method sendMessage: io.sockets is false.");
 			 return;
 			 }*/
 			//发送消息
-			var messageInfo = new MessageBody_1.MessageBody(data.messageType, data.message);
-			var message = messageInfo.messageJsonString();
-			connkeys.forEach(function (connKey) {
+			let messageInfo = new MessageBody_1.MessageBody(data.messageType, data.message);
+			let message = messageInfo.messageJsonString();
+			connKeys.forEach(function (connKey) {
 				try {
 					io.to(connKey).emit('msg', message);
 				} catch (e) {
@@ -160,7 +144,7 @@ const addClientToList = async function (clientInfo, rinfo) {
  */
 const updateClientInfo = async function (messageInfo, rinfo) {
 	var clientInfo = messageInfo.message;
-	await this.addClientToList(clientInfo, rinfo);
+	await addClientToList(clientInfo, rinfo);
 	/*	var args = [];
 	 args.push(clientInfo);
 	 //回调当前客户端方法
@@ -180,9 +164,8 @@ const updateClientInfo = async function (messageInfo, rinfo) {
 const registerClientInfo = async function (messageInfo, rinfo) {
 	//  clientInfo.resetIPPort(rinfo.address, rinfo.port)
 	var clientInfo = messageInfo.message;
-	this.addClientToList(clientInfo, rinfo);
+	await addClientToList(clientInfo, rinfo);
 };
-
 
 
 /**

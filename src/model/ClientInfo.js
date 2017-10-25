@@ -3,13 +3,16 @@
  */
 "use strict";
 let ClientInfo = (function () {
-	function ClientInfo(name, ip, port, registerInfo, isTestClient, connKey, externalIp,isMobile) {
+	function ClientInfo(userId,name, ip, port, registerInfo, isTestClient, connKey, externalIp,isMobile,tag1) {
+		this.userId = userId;
 		this.name = name;
 		this.ip = ip;
 		this.port = port;
 		this.registerInfo = registerInfo;
 		this.connKey = connKey;
 		this.externalIp = externalIp;
+		this.isMobile = isMobile;
+		this.tag1 = tag1;
 		if (isTestClient) {
 			this.isTestClient = isTestClient;
 		}

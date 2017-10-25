@@ -10,8 +10,10 @@ const log = require('../config/logger');
 const MessageProcessCore_1 = require('./MessageProcessCore');
 
 
-let _socketPort = process.env.NODE_APP_INSTANCE ? config.socket_port + process.env.NODE_APP_INSTANCE : config.socket_port;
+let _socketPort = process.env.NODE_APP_INSTANCE ? config.socket_port + Number(process.env.NODE_APP_INSTANCE) : config.socket_port;
 let io = require('socket.io')(_socketPort);
+
+log.info('current _socketPort:' + _socketPort);
 
 if (config.redisOptions) {
 	const redis = require('socket.io-redis');
@@ -27,6 +29,7 @@ io.on('connection', function (conn) {
 	console.log('user connected,id:' + conn.id);
 	conn.on("msg", function (dataStr) {
 		console.log("ws received length" + dataStr.length);
+		console.log("ws received DATA:" + dataStr);
 		MessageProcessCore_1.initReceive(dataStr,conn.id);
 		// log.info("Received " + str);
 	});

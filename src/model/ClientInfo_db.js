@@ -43,6 +43,16 @@ exports.online_client_db = sequelize.define(
 			type: Sequelize.STRING,
 			allowNull: true
 		},
+		isMobile: {
+			field: 'isMobile',
+			type: Sequelize.STRING,
+			allowNull: true
+		},
+		isTestClient: {
+			field: 'isTestClient',
+			type: Sequelize.STRING,
+			allowNull: true
+		},
 		/*create_time: {
 			field: 'create_time',
 			type: Sequelize.BIGINT,
@@ -55,7 +65,7 @@ exports.online_client_db = sequelize.define(
 		},*/
 		registerInfo: {
 			field: 'registerInfo',
-			type: Sequelize.STRING,
+			type: Sequelize.JSON,
 			allowNull: true
 		}
 	},

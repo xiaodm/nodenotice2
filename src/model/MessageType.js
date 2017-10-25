@@ -8,9 +8,9 @@
 	 */
 	MessageType[MessageType["OnlineRegister"] = 0] = "OnlineRegister";
 	/**
-	 * 回复注册
+	 * 重连
 	 */
-	MessageType[MessageType["ReplyRegister"] = 1] = "ReplyRegister";
+	MessageType[MessageType["Reconnected"] = 1] = "Reconnected";
 	/**
 	 * 下线
 	 */

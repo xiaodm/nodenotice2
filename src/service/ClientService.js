@@ -27,14 +27,19 @@ module.exports = {
 	async getByTag1(tag1) {
 		return await client_db.all({
 			raw: true,
-			order: "create_time desc",
+			order: "created_at desc",
 			where: {
 				tag1: tag1
 			}
 		});
 	},
-	async getByJsonProp(proName, proValue) {
-		const sqlStr = `SELECT * FROM online_client where JSON_EXTRACT(registerInfo,'$.${proName}') = ${proValue}`;
+	async getByJsonProp(proName, proValue,isRegisterProp) {
+		let sqlStr = '';
+		if(isRegisterProp){
+		  sqlStr = `SELECT * FROM online_client where JSON_EXTRACT(registerInfo,'$.${proName}') = ${proValue}`;
+		} else {
+			sqlStr = `SELECT * FROM online_client where ${proName} = '${proValue}'`;
+		}
 		return await mysqlSelf.query(sqlStr);
 	},
 	async upsert(client_info){
