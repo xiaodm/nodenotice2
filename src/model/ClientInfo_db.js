@@ -43,6 +43,11 @@ exports.online_client_db = sequelize.define(
 			type: Sequelize.STRING,
 			allowNull: true
 		},
+		liveId: {
+			field: 'liveId',
+			type: Sequelize.STRING,
+			allowNull: true
+		},
 		isMobile: {
 			field: 'isMobile',
 			type: Sequelize.STRING,

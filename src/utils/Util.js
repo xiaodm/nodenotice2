@@ -5,23 +5,17 @@
 "use strict";
 const log = require("../config/logger");
 const request = require("co-request");
+const Error = require('../utils/Error');
 const Util = (function () {
 	function Util() {
 	}
 
 	Util.succeed = function (result) {
-		var returnBase = { data: null, success: null };
-		returnBase.data = result;
-		returnBase.success = true;
-		return returnBase;
+		return { data: result, success: true };
 	};
 
-	Util.error = function (errorMsg) {
-		var returnBase = { data: null, success: null, error: null };
-		returnBase.data = false;
-		returnBase.success = false;
-		returnBase.error = { code: 99901, message: errorMsg };
-		return returnBase;
+	Util.error = function (errorCode) {
+		return { data: false, success: false, error: Error[errorCode] };
 	};
 
 	Util.postData = function (url, data) {

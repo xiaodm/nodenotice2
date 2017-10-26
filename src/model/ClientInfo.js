@@ -3,7 +3,7 @@
  */
 "use strict";
 let ClientInfo = (function () {
-	function ClientInfo(userId,name, ip, port, registerInfo, isTestClient, connKey, externalIp,isMobile,tag1) {
+	function ClientInfo(userId, name, ip, port, registerInfo, isTestClient, connKey, externalIp, isMobile, tag1, liveId) {
 		this.userId = userId;
 		this.name = name;
 		this.ip = ip;
@@ -13,6 +13,7 @@ let ClientInfo = (function () {
 		this.externalIp = externalIp;
 		this.isMobile = isMobile;
 		this.tag1 = tag1;
+		this.liveId = liveId;
 		if (isTestClient) {
 			this.isTestClient = isTestClient;
 		}
@@ -20,6 +21,7 @@ let ClientInfo = (function () {
 			this.isTestClient = false;
 		}
 	}
+
 	return ClientInfo;
 }());
 exports.ClientInfo = ClientInfo;

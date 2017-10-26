@@ -4,6 +4,7 @@
 
 "use strict";
 const ClientInfo_1 = require("../model/ClientInfo");
+const MessageInfo_1 = require("../model/MessageInfo");
 const MessageType_1 = require("../model/MessageType");
 const MessageBody_1 = require("../model/MessageBody");
 const log = require('../config/logger');
@@ -33,10 +34,10 @@ module.exports = {
 		messageInfo.message.connKey = rinfo.connKey;
 		switch (messageInfo.messageType) {
 			case MessageType_1.MessageType.OnlineRegister:
-				await registerClientInfo(messageInfo, rinfo);
+				await registerClientInfo(messageInfo, rinfo, this.socketServer);
 				break;
 			case MessageType_1.MessageType.Reconnected:
-				await registerClientInfo(messageInfo, rinfo);
+				await registerClientInfo(messageInfo, rinfo, this.socketServer);
 				break;
 			case MessageType_1.MessageType.UpdateClientInfo:
 				await updateClientInfo(messageInfo, rinfo);
@@ -75,7 +76,7 @@ module.exports = {
 	 * @param isRegisterInfoPro 是否为自定义的RegisterInfo内属性
 	 */
 	async getClientByCondition(proName, proValue, isRegisterInfoPro) {
-		return await Client_Service.getByJsonProp(proName,proValue,isRegisterInfoPro);
+		return await Client_Service.getByJsonProp(proName, proValue, isRegisterInfoPro);
 	},
 
 	/**
@@ -84,31 +85,7 @@ module.exports = {
 	 * @returns {Promise.<void>}
 	 */
 	async sendMsg(data) {
-		let io = this.socketServer;
-
-		try {
-			let connClients = await this.getClientByCondition(data.targetProName, data.targetProValues, data.isRegisterInfoPro);
-			let connKeys = connClients.map(t => t.connKey);
-			log.info('target connkeys:' + connKeys);
-			/*if (!io.sockets) {
-			 console.log(" method sendMessage: io.sockets is false.");
-			 return;
-			 }*/
-			//发送消息
-			let messageInfo = new MessageBody_1.MessageBody(data.messageType, data.message);
-			let message = messageInfo.messageJsonString();
-			connKeys.forEach(function (connKey) {
-				try {
-					io.to(connKey).emit('msg', message);
-				} catch (e) {
-					// TODO log to db ?
-					log.error(e);
-				}
-			});
-		}
-		catch (e) {
-			log.error(e);
-		}
+		await sendMsgCore(data, this.socketServer)
 	},
 
 	/**
@@ -116,10 +93,45 @@ module.exports = {
 	 * @param connKey
 	 */
 	async disconnectClientInfo(connKey) {
+		let user = await  Client_Service.getByConnKey(connKey);
 		await Client_Service.remove(connKey);
+		if (user && user.length > 0) {
+			//通知好友、所在组|直播间的成员
+			//测试阶段，先直接通知所有在线人员
+			let sendData = new MessageInfo_1.MessageInfo(1, 1, false, MessageType_1.MessageType.DisConnect, {
+				userId: user[0].userId
+			});
+			await sendMsgCore(sendData, this.socketServer);
+		}
 	}
 };
 
+
+const sendMsgCore = async function (data, io) {
+	try {
+		let connClients = await Client_Service.getByJsonProp(data.targetProName, data.targetProValues, data.isRegisterInfoPro);
+		let connKeys = connClients.map(t => t.connKey);
+		log.info('target connkeys:' + connKeys);
+		/*if (!io.sockets) {
+		 console.log(" method sendMessage: io.sockets is false.");
+		 return;
+		 }*/
+		//发送消息
+		let messageInfo = new MessageBody_1.MessageBody(data.messageType, data.message);
+		let message = messageInfo.messageJsonString();
+		connKeys.forEach(function (connKey) {
+			try {
+				io.to(connKey).emit('msg', message);
+			} catch (e) {
+				// TODO log to db ?
+				log.error(e);
+			}
+		});
+	}
+	catch (e) {
+		log.error(e);
+	}
+};
 
 /**
  * 添加客户端
@@ -161,10 +173,18 @@ const updateClientInfo = async function (messageInfo, rinfo) {
  * 注册客户端
  * @param clientInfo 客户端信息实体
  */
-const registerClientInfo = async function (messageInfo, rinfo) {
+const registerClientInfo = async function (messageInfo, rinfo, io) {
 	//  clientInfo.resetIPPort(rinfo.address, rinfo.port)
 	var clientInfo = messageInfo.message;
 	await addClientToList(clientInfo, rinfo);
+
+	//通知好友、所在组|直播间的成员
+	//测试阶段，先直接通知所有在线人员
+	let sendData = new MessageInfo_1.MessageInfo(1, 1, false, MessageType_1.MessageType.OnlineRegister, {
+		userId: clientInfo.userId
+	});
+	await sendMsgCore(sendData, io);
+
 };
 
 

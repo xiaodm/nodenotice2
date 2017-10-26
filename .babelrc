@@ -1,9 +1,15 @@
 {
-  "presets": [
-    ["env", {
-      "targets": {
-        "node": true
-      }
-    }]
-  ]
+	"presets": [
+		[
+			"env",
+			{
+				"targets": {
+					"node": "current"
+				}
+			}
+		]
+	],
+	"plugins": [
+		"transform-runtime"
+	]
 }

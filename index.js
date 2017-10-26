@@ -4,7 +4,7 @@
 "use strict";
 
 require('babel-register')({
-	ignore: /node_modules\/(?!koa-*)/
+	ignore: /node_modules\/(?!koa-*)(?!koa2-*)/
 });
 
 // 启动

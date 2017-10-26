@@ -24,6 +24,14 @@ module.exports = {
 			}
 		});
 	},
+	async getByLiveId(liveId) {
+		return await client_db.all({
+			raw: true,
+			where: {
+				liveId: liveId
+			}
+		});
+	},
 	async getByTag1(tag1) {
 		return await client_db.all({
 			raw: true,
@@ -33,10 +41,10 @@ module.exports = {
 			}
 		});
 	},
-	async getByJsonProp(proName, proValue,isRegisterProp) {
+	async getByJsonProp(proName, proValue, isRegisterProp) {
 		let sqlStr = '';
-		if(isRegisterProp){
-		  sqlStr = `SELECT * FROM online_client where JSON_EXTRACT(registerInfo,'$.${proName}') = ${proValue}`;
+		if (isRegisterProp) {
+			sqlStr = `SELECT * FROM online_client where JSON_EXTRACT(registerInfo,'$.${proName}') = ${proValue}`;
 		} else {
 			sqlStr = `SELECT * FROM online_client where ${proName} = '${proValue}'`;
 		}
@@ -57,7 +65,34 @@ module.exports = {
 			where: {
 				userId: userId
 			}
-		})
+		});
 	},
 
+	async joinLive(userId, liveId){
+		/*	let sqlStr = `update online_client set liveId = '${liveId}'  where userId = '${userId}'`;
+		 return await mysqlSelf.query(sqlStr);*/
+		return await  client_db.update(
+			{
+				liveId: liveId
+			},
+			{
+				where: {
+					userId: userId
+				}
+			}
+		);
+	},
+	async leaveLive(userId, liveId){
+		return await  client_db.update(
+			{
+				liveId: ''
+			},
+			{
+				where: {
+					userId: userId,
+					liveId: liveId
+				}
+			}
+		);
+	}
 };

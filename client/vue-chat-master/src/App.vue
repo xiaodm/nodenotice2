@@ -15,7 +15,7 @@
             }
         },
         created () {
-            this.initData();
+
         }
     }
 </script>
