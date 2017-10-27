@@ -64,6 +64,7 @@ const store = new Vuex.Store({
 		filterKey: ''
 	},
 	mutations: {
+		// 初始化数据
 		INIT_DATA (state) {
 			clientService.getAllOnlines(function (res, error) {
 				if (!error && res && res.success) {
@@ -196,7 +197,6 @@ const receiveData = function (data) {
 
 store.watch(
 	(state) => state.sessions,
-	(state) => state.user,
 	(val) => {
 		console.log('CHANGE: ', val);
 		localStorage.setItem('vue-chat-session', JSON.stringify(val));

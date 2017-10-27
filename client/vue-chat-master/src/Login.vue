@@ -16,10 +16,10 @@
 		<div class="login-button-box">
 			<button @click="submitForm()">Login</button>
 		</div>
-		<div class="logon-box">
+		<!--<div class="logon-box">
 			<a href="">Forgot?</a>
 			<a href="">Register</a>
-		</div>
+		</div>-->
 	</div>
 </template>
 
@@ -49,6 +49,7 @@
 			},
 			validateAdminAccount(user_input){
 				if (user_input.uid && user_input.pwd === '123456') {
+					this.initData();
 					this.$store.state.user =
 						{
 							userId: user_input.uid,
@@ -56,10 +57,6 @@
 							img: 'dist/images/1.jpg'
 						};
 					this.REGISTER_CLIENT();
-					let self = this;
-					setTimeout(function () {
-						self.initData();
-					}, 1000)
 				}
 			}
 		}
