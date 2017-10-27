@@ -3,7 +3,7 @@
  */
 
 "use strict";
-const ClientInfo_1 = require("../model/ClientInfo");
+const _ = require('lodash');
 const MessageInfo_1 = require("../model/MessageInfo");
 const MessageType_1 = require("../model/MessageType");
 const MessageBody_1 = require("../model/MessageBody");
@@ -12,9 +12,9 @@ const Client_Service = require("./ClientService");
 
 module.exports = {
 	socketServer: null,
-	async initReceive(data, connKey){
+	async initReceive(data, connInfo){
 		try {
-			await this.processSubscriptMessage(data, {connKey: connKey});
+			await this.processSubscriptMessage(data, connInfo);
 		}
 		catch (e) {
 			console.log(e);
@@ -24,23 +24,23 @@ module.exports = {
 	/**
 	 * 订阅消息处理器
 	 * @param message
-	 * @param rinfo
+	 * @param connInfo
 	 */
-	async processSubscriptMessage(message, rinfo) {
+	async processSubscriptMessage(message, connInfo) {
 		if (!message || message.length < 1) {
 			return;
 		}
 		var messageInfo = JSON.parse(message);
-		messageInfo.message.connKey = rinfo.connKey;
+		messageInfo.message.connKey = connInfo.connKey;
 		switch (messageInfo.messageType) {
 			case MessageType_1.MessageType.OnlineRegister:
-				await registerClientInfo(messageInfo, rinfo, this.socketServer);
+				await registerClientInfo(messageInfo, connInfo, this.socketServer);
 				break;
 			case MessageType_1.MessageType.Reconnected:
-				await registerClientInfo(messageInfo, rinfo, this.socketServer);
+				await registerClientInfo(messageInfo, connInfo, this.socketServer);
 				break;
 			case MessageType_1.MessageType.UpdateClientInfo:
-				await updateClientInfo(messageInfo, rinfo);
+				await updateClientInfo(messageInfo, connInfo);
 				break;
 			case MessageType_1.MessageType.DisConnect:
 				await this.disconnectClientInfo(messageInfo.connKey);
@@ -136,18 +136,13 @@ const sendMsgCore = async function (data, io) {
 /**
  * 添加客户端
  * @param clientInfo
- * @param rinfo
+ * @param connInfo
  * @returns {Promise.<void>}
  */
-const addClientToList = async function (clientInfo, rinfo) {
-	if (!clientInfo.isTestClient) {
-		if (!clientInfo.ip) {
-			clientInfo.ip = rinfo.address;
-		}
-		clientInfo.port = rinfo.port;
-	}
-	clientInfo.registerInfo.connectionId = clientInfo.connKey;
-	await Client_Service.upsert(clientInfo);
+const addClientToList = async function (clientInfo, connInfo) {
+	let clientInfo_db = _.assignIn(clientInfo,connInfo);
+	clientInfo_db.registerInfo.connectionId = clientInfo.connKey;
+	await Client_Service.upsert(clientInfo_db);
 };
 
 /**
@@ -173,10 +168,10 @@ const updateClientInfo = async function (messageInfo, rinfo) {
  * 注册客户端
  * @param clientInfo 客户端信息实体
  */
-const registerClientInfo = async function (messageInfo, rinfo, io) {
+const registerClientInfo = async function (messageInfo, connInfo, io) {
 	//  clientInfo.resetIPPort(rinfo.address, rinfo.port)
 	var clientInfo = messageInfo.message;
-	await addClientToList(clientInfo, rinfo);
+	await addClientToList(clientInfo, connInfo);
 
 	//通知好友、所在组|直播间的成员
 	//测试阶段，先直接通知所有在线人员

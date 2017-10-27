@@ -28,18 +28,28 @@ exports.online_client_db = sequelize.define(
 			type: Sequelize.STRING,
 			allowNull: true
 		},
-		ip: {
-			field: 'ip',
+		clientIp: {
+			field: 'clientIp',
 			type: Sequelize.STRING,
 			allowNull: true
 		},
-		externalIp: {
-			field: 'externalIp',
+		clientInsideIp: {
+			field: 'clientInsideIp',
 			type: Sequelize.STRING,
 			allowNull: true
 		},
-		port: {
-			field: 'port',
+		clientPort: {
+			field: 'clientPort',
+			type: Sequelize.STRING,
+			allowNull: true
+		},
+		serverWsIp: {
+			field: 'serverWsIp',
+			type: Sequelize.STRING,
+			allowNull: true
+		},
+		serverWsPort: {
+			field: 'serverWsPort',
 			type: Sequelize.STRING,
 			allowNull: true
 		},

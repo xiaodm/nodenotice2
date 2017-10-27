@@ -1,19 +1,21 @@
 /**
  * Created by deexiao on 2017/10/13.
  */
-const ClientInfo_1 = require("../model/ClientInfo");
 const MessageBody_1 = require("../model/MessageBody");
 const MessageType_1 = require("../model/MessageType");
+const Util = require('../utils/Util');
 const config = require("../config");
 const log = require('../config/logger');
 
 const MessageProcessCore_1 = require('./MessageProcessCore');
 
 
-let _socketPort = process.env.NODE_APP_INSTANCE ? config.socket_port + Number(process.env.NODE_APP_INSTANCE) : config.socket_port;
-let io = require('socket.io')(_socketPort);
+let socketPort = process.env.NODE_APP_INSTANCE ? config.socket_port + Number(process.env.NODE_APP_INSTANCE) : config.socket_port;
+let io = require('socket.io')(socketPort);
 
-log.info('current _socketPort:' + _socketPort);
+let currentIp = Util.getIPAddress();
+
+log.info('current socketPort:' + socketPort);
 
 if (config.redisOptions) {
 	const redis = require('socket.io-redis');
@@ -30,7 +32,15 @@ io.on('connection', function (conn) {
 	conn.on("msg", function (dataStr) {
 		console.log("ws received length" + dataStr.length);
 		console.log("ws received DATA:" + dataStr);
-		MessageProcessCore_1.initReceive(dataStr,conn.id);
+		let connInfo = {
+			connKey: conn.id,
+			serverWsIp: currentIp,
+			serverWsPort: socketPort,
+			clientIp: '',
+			clientPort: ''
+		};
+		;
+		MessageProcessCore_1.initReceive(dataStr, connInfo);
 		// log.info("Received " + str);
 	});
 	conn.on("disconnect", function (reason) {
