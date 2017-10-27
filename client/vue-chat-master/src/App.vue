@@ -22,7 +22,7 @@
 
 <template>
     <div id="app">
-        <div v-if="!user.name">
+        <div v-if="!user.name" class="divLogin">
             <Login></Login>
         </div>
         <div v-else class="divContent">
@@ -41,11 +41,12 @@
 <style lang="less" scoped>
     #app {
         margin: 20px auto;
-        width: 800px;
-        height: 600px;
+        width: 100%;
+        height: 100%;
 
         overflow: hidden;
         border-radius: 3px;
+		position: relative;
 
         .sidebar, .main {
             height: 100%;
@@ -75,5 +76,12 @@
     .divContent{
         width: 100%;
         height:100%;
+		position: relative;margin:auto; top: 0;left: 0;right: 0;bottom: 0;
     }
+
+	.divLogin{
+		width: 100%;
+		height:100%;
+		position: relative;margin:auto; top: 0;left: 0;right: 0;bottom: 0;
+	}
 </style>

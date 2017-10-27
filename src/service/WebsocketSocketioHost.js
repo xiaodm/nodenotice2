@@ -39,7 +39,6 @@ io.on('connection', function (conn) {
 			clientIp: '',
 			clientPort: ''
 		};
-		;
 		MessageProcessCore_1.initReceive(dataStr, connInfo);
 		// log.info("Received " + str);
 	});

@@ -1,8 +1,7 @@
-# Chat by Vue + Webpack
+# Chat-Client-Demo by Vue + Webpack
 
-[Live demo](http://coffcer.github.io/vue-chat/)
 
-<img width="600" src="https://github.com/Coffcer/vue-chat/blob/master/intro.jpg">
+<img width="600" src="https://github.com/Coffcer/vue-chat/blob/master/chat.png">
 
 ## Build Setup
 

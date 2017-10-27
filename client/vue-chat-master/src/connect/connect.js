@@ -5,8 +5,8 @@ import io from 'socket.io-client';
 import MessageInfo from './MessageInfo';
 
 const getTestPort = function () {
-	return 3366;
-	/*let ran = Math.random() * 10;
+	//return 3366;
+	let ran = Math.random() * 10;
 	 if (ran < 4) {
 	 return '3366';
 	 }
@@ -14,7 +14,7 @@ const getTestPort = function () {
 	 return '3367';
 	 } else {
 	 return '3368';
-	 }*/
+	 }
 }
 
 module.exports = {

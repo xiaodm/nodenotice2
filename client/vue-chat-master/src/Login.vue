@@ -65,25 +65,15 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-	body {
-		background: url("/dist/images/loginBg.jpg") no-repeat fixed;
-		/* set background tensile */
-		background-size: 100% 100%;
-		-moz-background-size: 100% 100%;
-		margin: 0;
-		padding: 0;
-	}
-
 	#content {
+		position: absolute;
 		background-color: rgba(255, 255, 255, 0.95);
 		width: 420px;
 		height: 300px;
 		border: 1px solid #000000;
 		border-radius: 6px;
 		padding: 10px;
-		margin-top: 15%;
-		margin-left: auto;
-		margin-right: auto;
+		margin:auto; top: 0;left: 0;right: 0;bottom: 0;
 		display: block;
 	}
 
