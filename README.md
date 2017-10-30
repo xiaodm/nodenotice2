@@ -1,17 +1,30 @@
-## nodenotice2
+## node notice server by socketio   
+> Requirements  
+1. node 6.0+  
+2. socketio  
+3. koa2   
+4. mysql  
+5. redis  
+6. bunyan
 
-koa2 bunyan socketio mysql redis
+### Install    
+```  
+   npm install
+```
 
-### npm install  
+###  Run      
+> see the config file: config_dev.json  
 
-### npm start
+* config mysql && start    
+* config redis && start 
+* run
+```  
+   npm start  
+```  
 
-## client-demo  
+## client demo  
 ``` shell  
 cd client/vue-chat-master   
-npm install  
-npm run dev  
 ```  
-input any username and password to login.
 
 

@@ -1,7 +1,7 @@
 # Chat-Client-Demo by Vue + Webpack
 
 
-<img width="600" src="https://github.com/Coffcer/vue-chat/blob/master/chat.png">
+<img width="600" src="https://github.com/xiaodm/nodenotice2/blob/master/client/vue-chat-master/chat.png">
 
 ## Build Setup
 
