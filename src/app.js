@@ -20,8 +20,6 @@ const app = new Koa(),
 	log.info(`${ctx.method} ${ctx.url} - ${ms}`);
 });*/
 
-const websocketHost = require("./service/WebsocketSocketioHost");
-
 onerror(app);
 
 app.use(cors());
@@ -39,6 +37,8 @@ app.on('error', (err, ctx) => {
 
 const appRouter = require('./router');
 appRouter(app);
+
+const websocketHost = require("./service/WebsocketSocketioHost");
 
 module.exports = app.listen(port, ip);
 log.info('listening on port %s', port);

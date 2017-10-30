@@ -17,7 +17,7 @@ module.exports = {
 			await this.processSubscriptMessage(data, connInfo);
 		}
 		catch (e) {
-			console.log(e);
+			log.error(e);
 		}
 	},
 
@@ -47,7 +47,7 @@ module.exports = {
 				break;
 			case MessageType_1.MessageType.CustomMessage:
 				await this.sendMsg(messageInfo);
-				console.log("receve CustomMessage:" + messageInfo.message);
+				log.info("receve CustomMessage:" + messageInfo.message);
 				break;
 		}
 	},
@@ -103,6 +103,16 @@ module.exports = {
 			});
 			await sendMsgCore(sendData, this.socketServer);
 		}
+	},
+	/**
+	 * 移除当前server-port host的客户端
+	 * @param serverWsIp
+	 * @param serverWsPort
+	 * @returns {Promise.<void>}
+	 */
+	async removeHostClients(serverWsIp, serverWsPort){
+		log.info(`remove By ServerPort ${serverWsIp}:${serverWsPort}`);
+		await  Client_Service.removeByServerPort(serverWsIp,serverWsPort);
 	}
 };
 
@@ -140,7 +150,7 @@ const sendMsgCore = async function (data, io) {
  * @returns {Promise.<void>}
  */
 const addClientToList = async function (clientInfo, connInfo) {
-	let clientInfo_db = _.assignIn(clientInfo,connInfo);
+	let clientInfo_db = _.assignIn(clientInfo, connInfo);
 	clientInfo_db.registerInfo.connectionId = clientInfo.connKey;
 	await Client_Service.upsert(clientInfo_db);
 };

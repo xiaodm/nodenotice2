@@ -17,6 +17,8 @@ let currentIp = Util.getIPAddress();
 
 log.info('current socketPort:' + socketPort);
 
+MessageProcessCore_1.removeHostClients(currentIp,socketPort);
+
 if (config.redisOptions) {
 	const redis = require('socket.io-redis');
 	io.adapter(redis({
@@ -28,10 +30,10 @@ if (config.redisOptions) {
 
 MessageProcessCore_1.socketServer = io;
 io.on('connection', function (conn) {
-	console.log('user connected,id:' + conn.id);
+	log.info('user connected,id:' + conn.id);
 	conn.on("msg", function (dataStr) {
-		console.log("ws received length" + dataStr.length);
-		console.log("ws received DATA:" + dataStr);
+		log.info("ws received length" + dataStr.length);
+		log.info("ws received DATA:" + dataStr);
 		let connInfo = {
 			connKey: conn.id,
 			serverWsIp: currentIp,
@@ -48,19 +50,19 @@ io.on('connection', function (conn) {
 			MessageProcessCore_1.disconnectClientInfo(conn.id);
 		}
 		catch (e) {
-			console.log(e);
+			log.error(e);
 		}
 	});
 	conn.on("error", function (error) {
-		console.log(error);
+		log.error(error);
 	});
 });
 
 io.on("close", function () {
-	console.log('ws server close');
+	log.info('ws server close');
 });
 io.on("exit", function (code) {
-	console.log('ws server exit');
+	log.info('ws server exit');
 });
 
 

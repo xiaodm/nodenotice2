@@ -48,13 +48,13 @@
 				this.validateAdminAccount(this.login_user);
 			},
 			validateAdminAccount(user_input){
-				if (user_input.uid && user_input.pwd === '123456') {
+				if (user_input.uid && user_input.pwd) {
 					this.initData();
 					this.$store.state.user =
 						{
 							userId: user_input.uid,
 							name: user_input.uid,
-							img: 'dist/images/1.jpg'
+							img: 'dist/images/3.jpg'
 						};
 					this.REGISTER_CLIENT();
 				}

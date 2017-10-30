@@ -67,7 +67,14 @@ module.exports = {
 			}
 		});
 	},
-
+	async removeByServerPort(serverWsIp, serverWsPort){
+		return await  client_db.destroy({
+			where: {
+				serverWsIp: serverWsIp,
+				serverWsPort: serverWsPort
+			}
+		});
+	},
 	async joinLive(userId, liveId){
 		/*	let sqlStr = `update online_client set liveId = '${liveId}'  where userId = '${userId}'`;
 		 return await mysqlSelf.query(sqlStr);*/
