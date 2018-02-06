@@ -11,13 +11,17 @@ const MessageProcessCore_1 = require('./MessageProcessCore');
 
 
 let socketPort = process.env.NODE_APP_INSTANCE ? config.socket_port + Number(process.env.NODE_APP_INSTANCE) : config.socket_port;
-let io = require('socket.io')(socketPort);
+let io = require('socket.io')(socketPort,
+	{
+		pingInterval: 10000,
+		pingTimeout: 25000,
+	});
 
 let currentIp = Util.getIPAddress();
 
 log.info('current socketPort:' + socketPort);
 
-MessageProcessCore_1.removeHostClients(currentIp,socketPort);
+MessageProcessCore_1.removeHostClients(currentIp, socketPort);
 
 if (config.redisOptions) {
 	const redis = require('socket.io-redis');
@@ -55,6 +59,10 @@ io.on('connection', function (conn) {
 	});
 	conn.on("error", function (error) {
 		log.error(error);
+	});
+
+	conn.conn.on('heartbeat', function () {
+		console.log('heartbeat,time:' + new Date().getTime());
 	});
 });
 
