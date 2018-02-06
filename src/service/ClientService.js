@@ -67,11 +67,12 @@ module.exports = {
 			}
 		});
 	},
-	async removeByServerPort(serverWsIp, serverWsPort){
+	async removeByServerPort(serverWsIp, serverWsPort, processId){
 		return await  client_db.destroy({
 			where: {
-				serverWsIp: serverWsIp,
-				serverWsPort: serverWsPort
+				wsIp: serverWsIp,
+				wsPort: serverWsPort,
+				wsPid:processId
 			}
 		});
 	},

@@ -8,7 +8,7 @@ import Vuex from 'vuex';
 import wsConn from './connect/connect';
 import statusService from './connect/service';
 
-const clientService = statusService('http://localhost:3355');
+const clientService = statusService('http://localhost:3366');
 
 Vue.use(Vuex);
 

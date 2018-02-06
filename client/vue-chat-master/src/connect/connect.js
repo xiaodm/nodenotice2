@@ -44,7 +44,9 @@ module.exports = {
 	 * @param receive 客户端接受消息回调
 	 */
 	connectServerCore: function (clientInfo, receive) {
-		this.socket = io.connect(getTestIpPort());
+		this.socket = io.connect(getTestIpPort(), {
+			"transports": ['websocket', 'polling']
+		});
 		let selfSocket = this.socket;
 		this.socket.on('disconnect', function () {
 			console.log('disconnect from server.')

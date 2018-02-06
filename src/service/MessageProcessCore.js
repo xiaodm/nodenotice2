@@ -108,11 +108,12 @@ module.exports = {
 	 * 移除当前server-port host的客户端
 	 * @param serverWsIp
 	 * @param serverWsPort
+	 * @param processId
 	 * @returns {Promise.<void>}
 	 */
-	async removeHostClients(serverWsIp, serverWsPort){
-		log.info(`remove By ServerPort ${serverWsIp}:${serverWsPort}`);
-		await  Client_Service.removeByServerPort(serverWsIp,serverWsPort);
+	async removeHostClients(serverWsIp, serverWsPort,processId){
+		log.info(`remove By ServerPort ${serverWsIp}:${serverWsPort} - ${processId}`);
+		await  Client_Service.removeByServerPort(serverWsIp,serverWsPort,processId);
 	}
 };
 

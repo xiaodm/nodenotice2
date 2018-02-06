@@ -43,13 +43,23 @@ exports.online_client_db = sequelize.define(
 			type: Sequelize.STRING,
 			allowNull: true
 		},
-		serverWsIp: {
-			field: 'serverWsIp',
+		wsIp: {
+			field: 'wsIp',
 			type: Sequelize.STRING,
 			allowNull: true
 		},
-		serverWsPort: {
-			field: 'serverWsPort',
+		wsPort: {
+			field: 'wsPort',
+			type: Sequelize.STRING,
+			allowNull: true
+		},
+		wsPid: {
+			field: 'wsPid',
+			type: Sequelize.STRING,
+			allowNull: true
+		},
+		wsPIndex: {
+			field: 'wsPIndex',
 			type: Sequelize.STRING,
 			allowNull: true
 		},

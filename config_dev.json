@@ -11,6 +11,5 @@
 		"auth": "pwd",
 		"redis_db": 2
 	},
-	"koa_port": 3355,
-	"socket_port": 3366
+	"koa_port": 3366
 }
