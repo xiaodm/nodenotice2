@@ -3,10 +3,9 @@
  */
 import io from 'socket.io-client';
 import MessageInfo from './MessageInfo';
-
 const getTestPort = function () {
-	//return 3366;
-	let ran = Math.random() * 10;
+	return 3366;
+	/*let ran = Math.random() * 10;
 	 if (ran < 4) {
 	 return '3366';
 	 }
@@ -14,7 +13,22 @@ const getTestPort = function () {
 	 return '3367';
 	 } else {
 	 return '3368';
+	 }*/
+}
+
+const getTestIpPort = function () {
+ return 'http://localhost:3366';
+ /*
+	let ran = Math.random() * 10;
+	 if (ran < 4) {
+	 return 'http://172.16.8.199:3366';
 	 }
+	 else if (ran < 7) {
+	 return 'http://172.16.8.197:3366';
+	 } else {
+	 return 'http://172.16.8.197:3367';
+	 }
+	 */
 }
 
 module.exports = {
@@ -30,7 +44,7 @@ module.exports = {
 	 * @param receive 客户端接受消息回调
 	 */
 	connectServerCore: function (clientInfo, receive) {
-		this.socket = io.connect('http://localhost:' + getTestPort());
+		this.socket = io.connect(getTestIpPort());
 		let selfSocket = this.socket;
 		this.socket.on('disconnect', function () {
 			console.log('disconnect from server.')
