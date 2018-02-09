@@ -100,10 +100,20 @@ const store = new Vuex.Store({
 			let session = sessions.find(item => item.id === currentSessionId);
 			if (!session)return;
 			if (!session.isLive) {
-				wsConn.sendMsg('userId', session.id, false, {content: content, type: '0', targetId: session.id});
+				wsConn.sendMsg({
+					targetProName: 'userId',
+					targetProValues: session.id,
+					isRegisterInfoPro: false,
+					message: {content: content, type: '0', targetId: session.id}
+				});
 			}
 			else {
-				wsConn.sendMsg('liveId', session.id, false, {content: content, type: '0', targetId: session.id});
+				wsConn.sendMsg({
+					targetProName: 'liveId',
+					targetProValues: session.id,
+					isRegisterInfoPro: false,
+					message: {content: content, type: '0', targetId: session.id}
+				});
 			}
 			session.messages.push({
 				content: content,
@@ -147,7 +157,7 @@ const store = new Vuex.Store({
 				heartInterval: 20000 // 心跳执行间隔
 			};
 			// 建立连接并注册
-			wsConn.connectServer(option,state.clientInfo, receiveData);
+			wsConn.connectServer(option, state.clientInfo, receiveData);
 		}
 	}
 });

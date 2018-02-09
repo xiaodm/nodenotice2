@@ -36,3 +36,11 @@ require("./service/WebsocketSocketioHost")(server);
 
 server.listen(port, ip);
 log.info('listening on port %s', port);
+
+process.on('uncaughtException', function (err) {
+	log.error('Uncaught exception ', err);
+});
+
+process.on('unhandledRejection', (reason, p) => {
+	log.error(reason, p);
+});

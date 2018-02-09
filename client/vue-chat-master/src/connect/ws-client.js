@@ -57,16 +57,16 @@ module.exports = {
 			});
 			_self.socket.on('reconnect', function () {
 				console.log("websocket连接成功");
-				_self.reconnect(e);
+				_self.reconnect();
 				_self.registerClient(_self.clientInfo);
 				_self.heartBeat(_self.clientInfo);
 			});
-			_self.socket.on('disconnect', function (e) {
-				console.log("websocket连接关闭", e);
-				_self.onclose(e);
+			_self.socket.on('disconnect', function () {
+				console.log("websocket连接关闭");
+				_self.onclose();
 				if (!_self.forceClose) {
 					setTimeout(function () {
-						console.log("reconnect", e);
+						console.log("reconnect");
 						_self.connectServerCore();
 					}, _self.reconnectInterval);
 				}
@@ -101,8 +101,9 @@ module.exports = {
 	 * @param msgInfo 消息对象
 	 */
 	sendMsg: function (msgInfo) {
-		message.from = this.clientInfo.userId;
 		let sendMsg = new MessageInfo(msgInfo.targetProName, msgInfo.targetProValues, msgInfo.isRegisterInfoPro, 4, msgInfo.message);
+		console.log(sendMsg);
+		sendMsg.message.from = this.clientInfo.userId;
 		this.socket.emit('msg', JSON.stringify(sendMsg));
 		console.log('sendMsg end');
 	},
