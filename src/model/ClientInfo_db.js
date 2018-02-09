@@ -88,6 +88,11 @@ exports.online_client_db = sequelize.define(
 			type: Sequelize.BIGINT,
 			allowNull: true
 		},*/
+		heartTime: {
+			field: 'heartTime',
+			type: Sequelize.BIGINT,
+			allowNull: false
+		},
 		registerInfo: {
 			field: 'registerInfo',
 			type: Sequelize.JSON,

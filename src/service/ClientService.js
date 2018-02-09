@@ -4,12 +4,32 @@
 "use strict";
 const client_db = require('../model/ClientInfo_db').online_client_db;
 const mysqlSelf = require('../db').mysql;
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+const config = require("../config");
 
+/**
+ * 心跳时间比较
+ * @returns {number}
+ */
+const compareHeartTime = function () {
+	return new Date().getTime() - config.heartTimeOut;
+};
+/**
+ * 构建心跳时间的where条件(如果过期数据还保留表里面，则加上此条件过滤)
+ * @returns {{}}
+ */
+const buildTimeWhere = function () {
+	return {[Op.gt]: compareHeartTime()};
+};
 module.exports = {
 	async list(){
 		return await client_db.findAll({
 			raw: true,
-			order: [['created_at', 'desc']]
+			order: [['created_at', 'desc']],
+			where: {
+				heartTime: buildTimeWhere()
+			}
 		});
 	},
 	async getByUserId(userId) {
@@ -28,7 +48,8 @@ module.exports = {
 		return await client_db.all({
 			raw: true,
 			where: {
-				liveId: liveId
+				liveId: liveId,
+				heartTime: buildTimeWhere()
 			}
 		});
 	},
@@ -37,16 +58,24 @@ module.exports = {
 			raw: true,
 			order: "created_at desc",
 			where: {
-				tag1: tag1
+				tag1: tag1,
+				heartTime: buildTimeWhere()
+			}
+		});
+	},
+	async updateHeartTime(connkey) {
+		return await client_db.update({heartTime: new Date().getTime()}, {
+			where: {
+				connKey: connkey
 			}
 		});
 	},
 	async getByJsonProp(proName, proValue, isRegisterProp) {
 		let sqlStr = '';
 		if (isRegisterProp) {
-			sqlStr = `SELECT * FROM online_client where JSON_EXTRACT(registerInfo,'$.${proName}') = ${proValue}`;
+			sqlStr = `SELECT * FROM online_client where JSON_EXTRACT(registerInfo,'$.${proName}') = ${proValue} AND heartTime > ${compareHeartTime()}`;
 		} else {
-			sqlStr = `SELECT * FROM online_client where ${proName} = '${proValue}'`;
+			sqlStr = `SELECT * FROM online_client where ${proName} = '${proValue}' AND heartTime > ${compareHeartTime()}`;
 		}
 		return await mysqlSelf.query(sqlStr);
 	},
@@ -72,7 +101,7 @@ module.exports = {
 			where: {
 				wsIp: serverWsIp,
 				wsPort: serverWsPort,
-				wsPid:processId
+				wsPid: processId
 			}
 		});
 	},

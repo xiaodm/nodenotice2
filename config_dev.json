@@ -11,5 +11,6 @@
 		"auth": "pwd",
 		"redis_db": 2
 	},
+	"heartTimeOut": 50000,
 	"koa_port": 3366
 }

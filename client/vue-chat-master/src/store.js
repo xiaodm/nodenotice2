@@ -5,7 +5,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import wsConn from './connect/connect';
+import wsConn from './connect/ws-client';
 import statusService from './connect/service';
 
 const clientService = statusService('http://localhost:3366');
@@ -139,8 +139,15 @@ const store = new Vuex.Store({
 				isTestClient: '0',
 				registerInfo: {pro1: '55', pro2: '66'}
 			};
+			let option = {
+				wsUrl: 'http://localhost:3366', // websocket地址
+				bid: '1111',  // 业务id
+				bName: 'wst', // 业务名称
+				xua: 'app', // 设备类型
+				heartInterval: 20000 // 心跳执行间隔
+			};
 			// 建立连接并注册
-			wsConn.connectServer(state.clientInfo, receiveData);
+			wsConn.connectServer(option,state.clientInfo, receiveData);
 		}
 	}
 });

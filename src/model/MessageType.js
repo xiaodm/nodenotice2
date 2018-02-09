@@ -31,5 +31,9 @@
 	 * 注册udp连接信息
 	 */
 	MessageType[MessageType["RegisterUDPConn"] = 6] = "RegisterUDPConn";
+	/**
+	 * 心跳
+	 */
+	MessageType[MessageType["HeartBeat"] = 7] = "HeartBeat";
 })(exports.MessageType || (exports.MessageType = {}));
 var MessageType = exports.MessageType;

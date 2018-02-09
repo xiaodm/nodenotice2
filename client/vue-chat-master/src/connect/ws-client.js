@@ -51,7 +51,7 @@ module.exports = {
 		if (_self.socket) {
 			_self.socket.on('connect', function () {
 				console.log("websocket连接成功");
-				_self.onopen(e);
+				_self.onopen();
 				_self.registerClient(_self.clientInfo);
 				_self.heartBeat(_self.clientInfo);
 			});
@@ -118,19 +118,8 @@ module.exports = {
 			this.inters = null;
 		}
 		this.inters = setInterval(function () {
-			var message = {
-				cmd: 4,
-				requestId: this.requestId++,
-				extra_data: JSON.stringify({
-					isHeart: 'true',
-					guid: clientInfo.userId,
-					xua: _config.xua,
-					uid: clientInfo.userId,
-					bid: _config.bid,
-					token: clientInfo.token
-				})
-			};
-			selfSocket && selfSocket.send(JSON.stringify(message));
+			let message = new MessageInfo('', '', '', 7, {userId:clientInfo.userId});
+			selfSocket && selfSocket.emit('msg', JSON.stringify(message));
 			console.log('sended heartBeat');
 		}, _config.heartInterval);
 

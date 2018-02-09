@@ -78,12 +78,4 @@ function SocketioManager(http) {
 }
 module.exports = SocketioManager;
 
-/*		let connInfo = {
-			connKey: conn.id,
-			serverWsIp: currentIp,
-			serverWsPort: socketPort,
-			clientIp: '',
-			clientPort: ''
-		};*/
-
 

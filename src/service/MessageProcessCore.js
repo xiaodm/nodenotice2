@@ -47,7 +47,11 @@ module.exports = {
 				break;
 			case MessageType_1.MessageType.CustomMessage:
 				await this.sendMsg(messageInfo);
-				log.info("receve CustomMessage:" + messageInfo.message);
+				log.info("receive CustomMessage:" + messageInfo.message);
+				break;
+			case MessageType_1.MessageType.HeartBeat:
+				await proHeartBeat(connInfo);
+				log.info("receive HeartBeat:" + JSON.stringify(messageInfo.message));
 				break;
 		}
 	},
@@ -97,7 +101,7 @@ module.exports = {
 		await Client_Service.remove(connKey);
 		if (user && user.length > 0) {
 			//通知好友、所在组|直播间的成员
-			//测试阶段，先直接通知所有在线人员
+			//暂时直接通知所有在线人员
 			let sendData = new MessageInfo_1.MessageInfo(1, 1, false, MessageType_1.MessageType.DisConnect, {
 				userId: user[0].userId
 			});
@@ -153,6 +157,7 @@ const sendMsgCore = async function (data, io) {
 const addClientToList = async function (clientInfo, connInfo) {
 	let clientInfo_db = _.assignIn(clientInfo, connInfo);
 	clientInfo_db.registerInfo.connectionId = clientInfo.connKey;
+	clientInfo_db.heartTime = new Date().getTime();
 	await Client_Service.upsert(clientInfo_db);
 };
 
@@ -180,12 +185,11 @@ const updateClientInfo = async function (messageInfo, rinfo) {
  * @param clientInfo 客户端信息实体
  */
 const registerClientInfo = async function (messageInfo, connInfo, io) {
-	//  clientInfo.resetIPPort(rinfo.address, rinfo.port)
 	var clientInfo = messageInfo.message;
 	await addClientToList(clientInfo, connInfo);
 
 	//通知好友、所在组|直播间的成员
-	//测试阶段，先直接通知所有在线人员
+	//暂直接通知所有在线人员
 	let sendData = new MessageInfo_1.MessageInfo(1, 1, false, MessageType_1.MessageType.OnlineRegister, {
 		userId: clientInfo.userId
 	});
@@ -193,6 +197,15 @@ const registerClientInfo = async function (messageInfo, connInfo, io) {
 
 };
 
+/**
+ * 心跳处理
+ * @param messageInfo
+ * @param connInfo
+ * @returns {Promise.<void>}
+ */
+const proHeartBeat = async function (connInfo) {
+	await Client_Service.updateHeartTime(connInfo.connKey);
+}
 
 /**
  * 客户端下线
